@@ -356,11 +356,11 @@ def generate_luck_image_with_icons(user_id: str, luck_data: dict, save_path: str
     print(user_id)
     print(luck_data)
     print(save_path)
-    medal_path = os.path.join(os.path.dirname(__file__), "img/medal.png")
-    hong_guan_path = os.path.join(os.path.dirname(__file__), "img/hong_guan.png")
-    jin_guan_path=os.path.join(os.path.dirname(__file__), "img/jin_guan.png")
-    yin_guan_path=os.path.join(os.path.dirname(__file__), "img/yin_guan.png")
-    font_path = os.path.join(os.path.dirname(__file__), "Kaiti.ttf") # 替代字体路径（实际使用中替换为楷体）
+    medal_path = os.path.join(BASE_DIR, "img/medal.png")
+    hong_guan_path = os.path.join(BASE_DIR, "img/hong_guan.png")
+    jin_guan_path=os.path.join(BASE_DIR, "img/jin_guan.png")
+    yin_guan_path=os.path.join(BASE_DIR, "img/yin_guan.png")
+    font_path = os.path.join(BASE_DIR, "Kaiti.ttf") # 替代字体路径（实际使用中替换为楷体）
     
     # 创建画布
     width, height = 720, 540
@@ -422,7 +422,7 @@ def generate_luck_image_with_icons(user_id: str, luck_data: dict, save_path: str
 @register(
     name="LuckGetProPlugin",
     description="测试运势的插件(进阶版)：带吉凶签、幸运色、宜忌、排行榜、偷取等功能。",
-    version="0.5",
+    version="0.6",
     author="Rio",
 )
 class LuckPluginAdvanced(BasePlugin):
@@ -509,7 +509,7 @@ class LuckPluginAdvanced(BasePlugin):
             #     generate_luck_image_with_icons(user_id, data, png_path)
             
             # await ctx.reply(MessageChain([Image(png_path)]))
-            png_path_test =  os.path.join(os.path.dirname(__file__), "img", "hong_guan.jpg")
+            png_path_test =  os.path.join(BASE_DIR, "img", "hong_guan.jpg")
             # png_path_test = "./img/hong_guan.png"
             
             # print(png_path_test)
