@@ -8,8 +8,9 @@ from pkg.platform.types import *
 import asyncio
 import json
 # img
-from PIL import Image, ImageDraw, ImageFont
-
+from PIL import Image as Image_
+from PIL import ImageDraw, ImageFont
+import logging
 
 # 创建UTC+8时区对象
 china_tz = timezone(timedelta(hours=8))
@@ -351,6 +352,10 @@ def update_luck_value(user_id: str, date_str: str, new_value: int):
 # 配置
 
 def generate_luck_image_with_icons(user_id: str, luck_data: dict, save_path: str):
+    print('init pic func')
+    print(user_id)
+    print(luck_data)
+    print(save_path)
     medal_path = os.path.join(os.path.dirname(__file__), "img/medal.png")
     hong_guan_path = os.path.join(os.path.dirname(__file__), "img/hong_guan.png")
     jin_guan_path=os.path.join(os.path.dirname(__file__), "img/jin_guan.png")
@@ -359,7 +364,7 @@ def generate_luck_image_with_icons(user_id: str, luck_data: dict, save_path: str
     
     # 创建画布
     width, height = 720, 540
-    img = Image.new("RGB", (width, height), (255, 250, 240))
+    img = Image_.new("RGB", (width, height), (255, 250, 240))
     draw = ImageDraw.Draw(img)
 
     # 加载字体
@@ -394,7 +399,7 @@ def generate_luck_image_with_icons(user_id: str, luck_data: dict, save_path: str
         "金雅": 3, "粉雅": 4, "紫雅": 5, "極": 6
     }
     if val_score in val_map:
-        sheet = Image.open(medal_path).convert("RGBA")
+        sheet = Image_.open(medal_path).convert("RGBA")
         icon_w, icon_h = 80, 80
         row = val_map[val_score]
         x0, y0 = 0, row * icon_h
@@ -403,10 +408,10 @@ def generate_luck_image_with_icons(user_id: str, luck_data: dict, save_path: str
 
     # 贴王冠图标（右上角）
     if luck_data['luck_value'] >= 95:
-        crown = Image.open(hong_guan_path).convert("RGBA").resize((64, 64))
+        crown = Image_.open(hong_guan_path).convert("RGBA").resize((64, 64))
         img.paste(crown, (width - 84, 20), crown)
     else:
-        crown = Image.open(jin_guan_path).convert("RGBA").resize((64, 64))
+        crown = Image_.open(jin_guan_path).convert("RGBA").resize((64, 64))
         img.paste(crown, (width - 84, 20), crown)
 
     img.save(save_path)
@@ -417,7 +422,7 @@ def generate_luck_image_with_icons(user_id: str, luck_data: dict, save_path: str
 @register(
     name="LuckGetProPlugin",
     description="测试运势的插件(进阶版)：带吉凶签、幸运色、宜忌、排行榜、偷取等功能。",
-    version="0.4",
+    version="0.5",
     author="Rio",
 )
 class LuckPluginAdvanced(BasePlugin):
@@ -462,7 +467,7 @@ class LuckPluginAdvanced(BasePlugin):
             return
 
         # --- /rp: 当日运势 ---
-        if cmd == "rp":
+        if cmd == "rp1":
             record = get_today_record(user_id)
             if record is None:
                 # 当天未抽，随机生成
@@ -495,31 +500,27 @@ class LuckPluginAdvanced(BasePlugin):
                 f"幸运色：{data['color']}\n"
                 f"宜：{data['advice_do']}；忌：{data['advice_dont']}"
             )
-            # 示例（用户填入）
-            example_data = {
-                "luck_value": 96,
-                "fortune_text": "大吉",
-                "color": "金色",
-                "advice_do": "搞副业",
-                "advice_dont": "熬夜打太鼓达人",
-                "val_score": "極"
-            }
             # 获取当前时间
-            now = datetime.now()
-            # 格式化为指定格式
-            formatted_time = now.strftime("%Y_%m_%d")
-            png_path = os.path.join(os.path.dirname(__file__), f"/geners/{formatted_time}_{user_id}.png")
-            if not os.path.exists(png_path):
-                generate_luck_image_with_icons(user_id, data, png_path)
+            # now = datetime.now()
+            # # 格式化为指定格式
+            # formatted_time = now.strftime("%Y_%m_%d")
+            # png_path = os.path.join(os.path.dirname(__file__), f"/geners/{formatted_time}_{user_id}.png")
+            # if not os.path.exists(png_path):
+            #     generate_luck_image_with_icons(user_id, data, png_path)
             
-            # await ctx.reply(MessageChain([Plain(reply_msg)]))
+            # await ctx.reply(MessageChain([Image(png_path)]))
+            png_path_test =  os.path.join(os.path.dirname(__file__), "img", "hong_guan.jpg")
+            # png_path_test = "./img/hong_guan.png"
             
-            await ctx.reply(MessageChain([Image(png_path)]))
+            # print(png_path_test)
+            # ctx.logger.info(png_path_test)
+            # await ctx.reply(MessageChain([Plain(png_path_test)]))
+            await ctx.reply(MessageChain([Image(path=png_path_test)]))
             
             return
 
         # --- /rp记录: 查看全部历史 ---
-        if cmd == "rp记录":
+        if cmd == "rp1记录":
             all_records = get_all_luck_records(user_id)
             if not all_records:
                 await ctx.reply(MessageChain([Plain("你还没有任何运势记录~")]))
@@ -553,7 +554,7 @@ class LuckPluginAdvanced(BasePlugin):
         #         return
 
         # --- /rp排行榜: 今日最高 ---
-        if cmd == "rp排行榜":
+        if cmd == "rp1排行榜":
             # 也可以在这里判断是否是群聊才执行，比如:
             # if ctx.event.launcher_type != "GROUP":
             #     await ctx.reply(MessageChain([Plain("排行榜仅限群聊使用")]))
@@ -576,7 +577,7 @@ class LuckPluginAdvanced(BasePlugin):
             return
 
         # --- /rp偷: 偷取他人运势 ---
-        if cmd == "rp偷":
+        if cmd == "rp1偷":
             if not arg:
                 await ctx.reply(MessageChain([Plain("用法：/rp偷 @某人")]))
                 return
