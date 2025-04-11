@@ -351,11 +351,11 @@ def update_luck_value(user_id: str, date_str: str, new_value: int):
 # 配置
 
 def generate_luck_image_with_icons(user_id: str, luck_data: dict, save_path: str):
-    medal_path = "./img/jiangzhang.png"
-    hong_guan_path = "./img/hong_guan.png"
-    jin_guan_path="./img/jin_guan.png"
-    yin_guan_path="./img/yin_guan.png"
-    font_path = "./KaiTi-1.ttf"  # 替代字体路径（实际使用中替换为楷体）
+    medal_path = os.path.join(os.path.dirname(__file__), "img/medal.png")
+    hong_guan_path = os.path.join(os.path.dirname(__file__), "img/hong_guan.png")
+    jin_guan_path=os.path.join(os.path.dirname(__file__), "img/jin_guan.png")
+    yin_guan_path=os.path.join(os.path.dirname(__file__), "img/yin_guan.png")
+    font_path = os.path.join(os.path.dirname(__file__), "Kaiti.ttf") # 替代字体路径（实际使用中替换为楷体）
     
     # 创建画布
     width, height = 720, 540
@@ -417,7 +417,7 @@ def generate_luck_image_with_icons(user_id: str, luck_data: dict, save_path: str
 @register(
     name="LuckGetProPlugin",
     description="测试运势的插件(进阶版)：带吉凶签、幸运色、宜忌、排行榜、偷取等功能。",
-    version="0.3",
+    version="0.4",
     author="Rio",
 )
 class LuckPluginAdvanced(BasePlugin):
@@ -508,9 +508,7 @@ class LuckPluginAdvanced(BasePlugin):
             now = datetime.now()
             # 格式化为指定格式
             formatted_time = now.strftime("%Y_%m_%d")
-            png_path = f"./geners/{formatted_time}_{user_id}.png"
-            if not os.path.exists("./geners"):
-                os.makedirs("./geners")
+            png_path = os.path.join(os.path.dirname(__file__), f"/geners/{formatted_time}_{user_id}.png")
             if not os.path.exists(png_path):
                 generate_luck_image_with_icons(user_id, data, png_path)
             
