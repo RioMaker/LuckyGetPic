@@ -349,13 +349,14 @@ def update_luck_value(user_id: str, date_str: str, new_value: int):
 
 
 # 配置
-medal_path = "./img/jiangzhang.png"
-hong_guan_path = "./img/hong_guan.png"
-jin_guan_path="./img/jin_guan.png"
-yin_guan_path="./img/yin_guan.png"
-font_path = "'./KaiTi-1.ttf'"  # 替代字体路径（实际使用中替换为楷体）
 
 def generate_luck_image_with_icons(user_id: str, luck_data: dict, save_path: str):
+    medal_path = "./img/jiangzhang.png"
+    hong_guan_path = "./img/hong_guan.png"
+    jin_guan_path="./img/jin_guan.png"
+    yin_guan_path="./img/yin_guan.png"
+    font_path = "./KaiTi-1.ttf"  # 替代字体路径（实际使用中替换为楷体）
+    
     # 创建画布
     width, height = 720, 540
     img = Image.new("RGB", (width, height), (255, 250, 240))
