@@ -494,7 +494,29 @@ class LuckPluginAdvanced(BasePlugin):
                 f"幸运色：{data['color']}\n"
                 f"宜：{data['advice_do']}；忌：{data['advice_dont']}"
             )
-            await ctx.reply(MessageChain([Plain(reply_msg)]))
+            # 示例（用户填入）
+            example_data = {
+                "luck_value": 96,
+                "fortune_text": "大吉",
+                "color": "金色",
+                "advice_do": "搞副业",
+                "advice_dont": "熬夜打太鼓达人",
+                "val_score": "極"
+            }
+            # 获取当前时间
+            now = datetime.now()
+            # 格式化为指定格式
+            formatted_time = now.strftime("%Y_%m_%d")
+            png_path = f"./geners/{formatted_time}_{user_id}.png"
+            if not os.path.exists("./geners"):
+                os.makedirs("./geners")
+            if not os.path.exists(png_path):
+                generate_luck_image_with_icons(user_id, data, png_path)
+            
+            # await ctx.reply(MessageChain([Plain(reply_msg)]))
+            
+            await ctx.reply(MessageChain([Image(png_path)]))
+            
             return
 
         # --- /rp记录: 查看全部历史 ---
