@@ -414,9 +414,9 @@ def generate_luck_image_with_icons(user_id: str, luck_data: dict, save_path: str
 
 
 @register(
-    name="LuckPluginAdvanced",
+    name="LuckGetProPlugin",
     description="测试运势的插件(进阶版)：带吉凶签、幸运色、宜忌、排行榜、偷取等功能。",
-    version="2.2",
+    version="0.1",
     author="Rio",
 )
 class LuckPluginAdvanced(BasePlugin):
